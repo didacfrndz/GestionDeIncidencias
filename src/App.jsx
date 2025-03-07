@@ -1,35 +1,48 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import Panel from './vistas/Panel';
+import InicioSesion from './vistas/InicioSesion';
+import Registro from './vistas/Registro';
+import './styles/bootstrap.scss';
+import { RecuperarUsuario } from './vistas/localStorage/functions';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [usuarioActual, setUsuarioActual] = useState(null);
+  
+  useEffect(() => {
+    RecuperarUsuario(setUsuarioActual);
+  }, []);
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <Router>
+        <header>
+          <nav className="navbar navbar-light bg-light">
+            <div className="container-fluid">
+              <a className="navbar-brand">Gestión de incidencias FPLLEFIA</a>
+              <div>
+                <Link to="/Panel" className="btn btn-secondary ms-2">PANEL</Link>
+                <Link to="/InicioSesion" className="btn btn-secondary ms-2">LOGIN</Link>
+                <Link to="/Registro" className="btn btn-secondary ms-2">REGISTRO</Link>
+              </div>
+              <div>
+                <span>
+                  {usuarioActual ? usuarioActual : "Incógnito"}
+                </span>
+              </div>
+            </div>
+          </nav>
+        </header>
+        <div className="container mt-4" style={{ padding: 0 }}>
+          <Routes>
+            <Route path="/Panel" element={<Panel />} />
+            <Route path="/InicioSesion" element={<InicioSesion setUsuarioActual={setUsuarioActual} />} />
+            <Route path="/Registro" element={<Registro />} />
+          </Routes>
+        </div>
+      </Router>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
